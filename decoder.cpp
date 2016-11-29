@@ -2,8 +2,8 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include "sphinxbase/info.h"
-#include "sphinxbase/unlimit.h"
+//#include "sphinxbase/info.h"
+//#include "sphinxbase/unlimit.h"
 #include "utt.h"
 #include "kb.h"
 #include "srch_output.h"
@@ -122,20 +122,21 @@ wxString GetLastLine(MorphMap &m){
 	wxString tmp;
 	int j, n=0;
 
+	E_INFO("check the file \n");
 	if ( !wxFile::Exists(DECODEDTEXT))
 		return _T("");
+	E_INFO("file exists\n");
 
 	f.Open(DECODEDTEXT);
 	if (f.GetLineCount()==0)
 		return _T("");
+	E_INFO("file is good\n");
 	s = f.GetLastLine();
-	morphs = wxStringTokenize(s, _("(")); 
-	word=morphs[0];
-	word.Trim().Append(_T(" "));
-	wxPuts(word);
+	s.Replace(_("Result:"), _(""));
+	s.Trim().Append(_T(" "));
 	f.Close();
 	if (m.size()==0)
-	    return word;
+	    return s;
 	morphs = wxStringTokenize(s, _(" ")); 
 	tmp =_("");
 	n = morphs.Count();
@@ -166,10 +167,10 @@ wxString GetTranslation(TransMap &m){
 	wxString tmp;
 	int n=0;
 
-	if ( !wxFile::Exists(DECODEDTEXT))
+	if ( !wxFile::Exists(TEMPFILE))
 		return _T("");
 
-	f.Open(DECODEDTEXT);
+	f.Open(TEMPFILE);
 	if (f.GetLineCount()==0)
 		return _T("");
 	s = f.GetLastLine();
@@ -299,6 +300,7 @@ process_utt(char *uttfile,
     ptmr_init(&tm);
     ur = new_utt_res();
 //    path2basename(uttfile, base);
+    strcpy(base, path2basename(uttfile));
     FillMap(m2w);
     FillTranslator(translator);
     if (m2w.size()==0){
@@ -318,7 +320,6 @@ process_utt(char *uttfile,
 
 	E_INFO("Waiting for connection\n");
         while (!(sock && sock->IsConnected())){
-//  		sock->SetTimeout(timeout);
 		sock = server->Accept();
 	}
 		E_INFO("Waiting for %s, #: %d\n", uttfile, c++);
@@ -343,11 +344,8 @@ process_utt(char *uttfile,
 		        while (!(sock && sock->IsConnected())){
 			    sock = server->Accept();
 			}
-//			sock->WriteMsg(s.c_str(), sz);
-printf("sz= %d\n", sz);
-			sock->WriteMsg(s, sz);
-//			sock->WriteMsg(_("Test test"), 10);
-		
+			sock->WriteMsg(s.c_str(), sz);
+//			sock->WriteMsg(s, sz);
 			sock->Close();
 			E_INFO("Result sent %d\n", s.Length());
 			
@@ -364,6 +362,7 @@ printf("sz= %d\n", sz);
     return res;
 }
 
+
 kb_t kb;
 
 int decode(char** argv){
@@ -373,7 +372,7 @@ int decode(char** argv){
 	const char *logfile;
 	
 	config = cmd_ln_parse_file_r(NULL, arg, argv[1], FALSE);
-	unlimit();
+//	unlimit();
 
 	if (logfile = cmd_ln_str_r(config, "-logfn")){
 		remove(logfile);
