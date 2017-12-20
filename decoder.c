@@ -164,6 +164,8 @@ static arg_t arg[] = {
 #define TEMPFILE _T("temp.txt")
 #define BUFLEN 500
 #define CMD_STOP 2
+#define APPNAME "Dictomash"
+#define WORKDIR	"Decoder"
 WX_DECLARE_STRING_HASH_MAP(wxString, PhraseBookEn);
 WX_DECLARE_STRING_HASH_MAP(wxString, PhraseBookRu);
 
@@ -492,8 +494,25 @@ doDecode(char** argv)
 	int res, port, timeout;
     cmd_ln_t *config;
 	const char *logfile;
-	
+	char* programdata = getenv("PROGRAMDATA");
+	char *tmp, workdir[BUFLEN];
+
+
 	config = cmd_ln_parse_file_r(NULL, arg, argv[1], FALSE);
+
+	workdir[0] = 0;
+	tmp = strcat(workdir, programdata);
+	tmp = strcat(tmp, "\\");
+	tmp = strcat(tmp, APPNAME);
+	_mkdir(tmp);
+	tmp = strcat(tmp, "\\");
+	tmp = strcat(tmp, WORKDIR);
+	_mkdir(tmp);
+
+//	free(tmp);
+
+
+	int err = _chdir(workdir);
 //	unlimit();
 
 	if (logfile = cmd_ln_str_r(config, "-logfn")){
