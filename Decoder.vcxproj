@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\defevent.h" />
+    <ClInclude Include="ASRSrvApp.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lang\kk\Decoder.po" />

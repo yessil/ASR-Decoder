@@ -1,5 +1,6 @@
 ﻿
 // For compilers that support precompilation, includes "wx/wx.h".
+#include "ASRSrvApp.h"
 #include "wx/wxprec.h"
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWidgets headers)
@@ -19,7 +20,6 @@
         (wxObject *) NULL \
     ),
 
-#define APPNAME "Dictomash"
 // Define a new application type, each program should derive a class from wxApp
 class DecoderApp : public wxApp
 {

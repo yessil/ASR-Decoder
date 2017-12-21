@@ -81,7 +81,7 @@
 #include <wx/process.h>
 #include <wx/wfstream.h>
 #include <wx/dir.h>
-
+#include "ASRSrvApp.h"
 //#include "wx/msw/ole/automtn.h"
 
 static arg_t arg[] = {
@@ -165,8 +165,6 @@ static arg_t arg[] = {
 #define TEMPFILE _T("temp.txt")
 #define BUFLEN 500
 #define CMD_STOP 2
-#define APPNAME "Dictomash"
-#define WORKDIR	"Decoder"
 #define CEPDIR	"mfc"
 WX_DECLARE_STRING_HASH_MAP(wxString, PhraseBookEn);
 WX_DECLARE_STRING_HASH_MAP(wxString, PhraseBookRu);
@@ -203,8 +201,7 @@ void fillHashMaps(PhraseBookEn& tableEn, PhraseBookRu& tableRu, wxString fileNam
 
 	wxTextFile f;
 	wxString sk, se, sr;
-	bool eof = false;
-
+	
 	if (wxFile::Exists(fileName)){
 		f.Open(fileName);
 		if (f.GetLineCount()>0){
@@ -264,7 +261,7 @@ int ReceiveFile( wxSocketBase *sock){
 	char buf[BUFLEN];
 	int len = 0;
 	int res = -1;
-	wxString file = wxGetCwd().Append(_(CEPDIR)).Append(_("/recorded.mfc"));
+	wxString file = wxGetCwd().Append(_("/")).Append(_(CEPDIR)).Append(_("/recorded.mfc"));
 	wxFileOutputStream fo(file);
 
 	while (true){
@@ -463,7 +460,6 @@ int doDecode(char** argv);
 
 int decode(){
 
-	int res = 0;
 	char* argv[] = {"dummy.exe", "etc/decode.cfg"};
 	return doDecode(argv);
 }
@@ -497,14 +493,13 @@ doDecode(char** argv)
 	int res, port, timeout;
     cmd_ln_t *config;
 	const char *logfile;
-	char *tmp;
 	wxString workDir;
 	wxGetEnv(_("PROGRAMDATA"), &workDir);
-	workDir.Append(_("\\")).Append(_(APPNAME)).Append(_(WORKDIR));
+	workDir.Append(_("\\")).Append(_(APPNAME));
 	if (!wxDir::Exists(workDir)) {
 		wxMkdir(workDir);
 	}
-	bool ok = wxSetWorkingDirectory(workDir);
+	wxSetWorkingDirectory(workDir);
 	//hope
 	wxMkdir(_(CEPDIR));
 

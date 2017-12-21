@@ -32,6 +32,9 @@
     <ClInclude Include="..\defevent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ASRSrvApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="lang\kk\Decoder.po">
