@@ -494,15 +494,7 @@ doDecode(char** argv)
     cmd_ln_t *config;
 	const char *logfile;
 	wxString workDir;
-
-	config = cmd_ln_parse_file_r(NULL, arg, argv[1], FALSE);
-
-	if (logfile = cmd_ln_str_r(config, "-logfn")){
-		remove(logfile);
-		err_set_logfile(logfile);
-	}
-	port = cmd_ln_int_r(config, "-port");
-	timeout = cmd_ln_int_r(config, "-timeout");
+	wxString launchDir = wxGetCwd();
 
 	wxGetEnv(_("PROGRAMDATA"), &workDir);
 	workDir.Append(_("\\")).Append(_(APPNAME));
@@ -510,8 +502,20 @@ doDecode(char** argv)
 		wxMkdir(workDir);
 	}
 	wxSetWorkingDirectory(workDir);
-	//hope
-	wxMkdir(_(CEPDIR));
+	if (!wxDir::Exists(_(CEPDIR))) {
+		wxMkdir(_(CEPDIR));
+	}
+
+	config = cmd_ln_parse_file_r(NULL, arg, argv[1], FALSE);
+
+	port = cmd_ln_int_r(config, "-port");
+	timeout = cmd_ln_int_r(config, "-timeout");
+
+	if (logfile = cmd_ln_str_r(config, "-logfn")) {
+		remove(logfile);
+		err_set_logfile(logfile);
+	}
+	//wxSetWorkingDirectory(launchDir);
 
 	kb_init(&kb, config);
 	/* When -utt is specified, corpus.c will wait for the utterance to change */
@@ -519,6 +523,7 @@ doDecode(char** argv)
 
 	//checkdict();
 	//testsock();
+	//wxSetWorkingDirectory(workDir);
 	res = process_utt((char*)cmd_ln_str_r(config,"-utt"), utt_decode2, &kb, port, timeout);
 
 	if (kb.matchsegfp)
