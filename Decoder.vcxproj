@@ -136,6 +136,9 @@
   <ItemGroup>
     <ClInclude Include="..\defevent.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="lang\Decoder.po" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

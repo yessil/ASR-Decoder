@@ -19,6 +19,7 @@
         (wxObject *) NULL \
     ),
 
+#define APPNAME "Dictomash"
 // Define a new application type, each program should derive a class from wxApp
 class DecoderApp : public wxApp
 {
@@ -71,16 +72,19 @@ bool DecoderApp::OnInit()
         return false;
 
 	wxHandleFatalExceptions(false);
+	wxLocale::AddCatalogLookupPathPrefix(wxT("./lang"));
+	bool check = m_locale.Init(wxLANGUAGE_KAZAKH, wxLOCALE_CONV_ENCODING);
+	check = m_locale.AddCatalog(_(APPNAME));
 
-	SetVendorName(_T("Dictomash"));
+	SetVendorName(_T(APPNAME));
 	int l = m_locale.GetLanguage();
 	wxString s = m_locale.GetLanguageName(l);
 
 	m_locale.Init(wxLANGUAGE_UNKNOWN, wxLOCALE_CONV_ENCODING);
 	if (decode()<0){
-		wxMessageBox(_T("Ошибка сервера"), _T("Сообщения системы"), wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(_T("Server error"), _T("System messages"), wxOK | wxICON_ERROR, NULL);
 	} else
-		wxMessageBox(_T("Работа завершена"), _T("Сообщения системы"), wxOK | wxICON_INFORMATION, NULL);
+		wxMessageBox(_T("Service completed"), _T("System messages"), wxOK | wxICON_INFORMATION, NULL);
 
 	return false;
  //   return true;
@@ -117,8 +121,8 @@ void DecoderApp::OnUnhandledException()
 
 void DecoderApp::OnFatalException()
 {
-    wxMessageBox(_T("Пенальти !!"),
-                 _T("Красная карточка"), wxOK | wxICON_ERROR);
+    wxMessageBox(_T("Fatal error"),
+                 _T("Server error"), wxOK | wxICON_ERROR);
 	if (::wxFileExists(_("semafor")))
 		::wxRemoveFile(_("semafor"));
 	exit(-1);

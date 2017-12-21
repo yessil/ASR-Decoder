@@ -13,6 +13,12 @@
       <UniqueIdentifier>{c763a654-e30f-42b1-9c3a-081305766c43}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="lang">
+      <UniqueIdentifier>{5522700d-ba03-4377-9fc7-b0d91581d3d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lang\kk">
+      <UniqueIdentifier>{d3e1fe0e-f79c-4f7d-92cc-91c62c217699}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="decoder.c">
@@ -26,5 +32,10 @@
     <ClInclude Include="..\defevent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lang\Decoder.po">
+      <Filter>lang\kk</Filter>
+    </None>
   </ItemGroup>
 </Project>

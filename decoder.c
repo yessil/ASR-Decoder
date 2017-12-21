@@ -80,6 +80,7 @@
 #include "wx/string.h"
 #include <wx/process.h>
 #include <wx/wfstream.h>
+#include <wx/dir.h>
 
 //#include "wx/msw/ole/automtn.h"
 
@@ -166,6 +167,7 @@ static arg_t arg[] = {
 #define CMD_STOP 2
 #define APPNAME "Dictomash"
 #define WORKDIR	"Decoder"
+#define CEPDIR	"mfc"
 WX_DECLARE_STRING_HASH_MAP(wxString, PhraseBookEn);
 WX_DECLARE_STRING_HASH_MAP(wxString, PhraseBookRu);
 
@@ -262,8 +264,8 @@ int ReceiveFile( wxSocketBase *sock){
 	char buf[BUFLEN];
 	int len = 0;
 	int res = -1;
-
-	wxFileOutputStream fo(_("mfc/recorded.mfc"));
+	wxString file = wxGetCwd().Append(_(CEPDIR)).Append(_("/recorded.mfc"));
+	wxFileOutputStream fo(file);
 
 	while (true){
 		sock->ReadMsg(buf, BUFLEN);
@@ -280,6 +282,7 @@ int ReceiveFile( wxSocketBase *sock){
 			res = CMD_STOP;
 	}
 	fo.Close();
+	wxCopyFile(file, _("recorded.mfc.bak"));
 	return res;
 }
 
@@ -435,7 +438,7 @@ process_utt(char *uttfile, int (*func) (void *kb, utt_res_t * ur, int32 sf, int3
 			ptmr_reset(&tm);
 			E_INFO("Sending results back\n");
 			s = GetLastLine().Trim(true); 
-			s.Append(_("\n Eng: ")).Append(en[s]).Append(_("\n Rus: ")).Append(ru[s]);
+			//s.Append(_("\n Eng: ")).Append(en[s]).Append(_("\n Rus: ")).Append(ru[s]);
 			int l = s.Len()*sizeof(wxChar)+2;
 			sock->WriteMsg(s, l);
 
@@ -494,26 +497,18 @@ doDecode(char** argv)
 	int res, port, timeout;
     cmd_ln_t *config;
 	const char *logfile;
-	char* programdata = getenv("PROGRAMDATA");
-	char *tmp, workdir[BUFLEN];
-
+	char *tmp;
+	wxString workDir;
+	wxGetEnv(_("PROGRAMDATA"), &workDir);
+	workDir.Append(_("\\")).Append(_(APPNAME)).Append(_(WORKDIR));
+	if (!wxDir::Exists(workDir)) {
+		wxMkdir(workDir);
+	}
+	bool ok = wxSetWorkingDirectory(workDir);
+	//hope
+	wxMkdir(_(CEPDIR));
 
 	config = cmd_ln_parse_file_r(NULL, arg, argv[1], FALSE);
-
-	workdir[0] = 0;
-	tmp = strcat(workdir, programdata);
-	tmp = strcat(tmp, "\\");
-	tmp = strcat(tmp, APPNAME);
-	_mkdir(tmp);
-	tmp = strcat(tmp, "\\");
-	tmp = strcat(tmp, WORKDIR);
-	_mkdir(tmp);
-
-//	free(tmp);
-
-
-	int err = _chdir(workdir);
-//	unlimit();
 
 	if (logfile = cmd_ln_str_r(config, "-logfn")){
 		remove(logfile);
