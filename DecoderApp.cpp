@@ -74,17 +74,18 @@ bool DecoderApp::OnInit()
 	wxHandleFatalExceptions(false);
 	wxLocale::AddCatalogLookupPathPrefix(wxT("./lang"));
 	bool check = m_locale.Init(wxLANGUAGE_KAZAKH, wxLOCALE_CONV_ENCODING);
-	check = m_locale.AddCatalog(_(APPNAME));
+	check = m_locale.AddCatalog(_T(APPNAME));
 
 	SetVendorName(_T(APPNAME));
 	int l = m_locale.GetLanguage();
 	wxString s = m_locale.GetLanguageName(l);
 
-	m_locale.Init(wxLANGUAGE_UNKNOWN, wxLOCALE_CONV_ENCODING);
+	//m_locale.Init(wxLANGUAGE_UNKNOWN, wxLOCALE_CONV_ENCODING);
+	//wxMessageBox(_("Service started"), _("System messages"), wxOK | wxICON_INFORMATION, NULL);
 	if (decode()<0){
-		wxMessageBox(_T("Server error"), _T("System messages"), wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(_("Server error"), _("System messages"), wxOK | wxICON_ERROR, NULL);
 	} else
-		wxMessageBox(_T("Service completed"), _T("System messages"), wxOK | wxICON_INFORMATION, NULL);
+		wxMessageBox(_("Service completed"), _("System messages"), wxOK | wxICON_INFORMATION, NULL);
 
 	return false;
  //   return true;
