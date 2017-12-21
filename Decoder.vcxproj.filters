@@ -34,7 +34,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="lang\Decoder.po">
+    <None Include="lang\kk\Decoder.po">
       <Filter>lang\kk</Filter>
     </None>
   </ItemGroup>
