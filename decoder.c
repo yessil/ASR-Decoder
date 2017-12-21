@@ -494,14 +494,6 @@ doDecode(char** argv)
     cmd_ln_t *config;
 	const char *logfile;
 	wxString workDir;
-	wxGetEnv(_("PROGRAMDATA"), &workDir);
-	workDir.Append(_("\\")).Append(_(APPNAME));
-	if (!wxDir::Exists(workDir)) {
-		wxMkdir(workDir);
-	}
-	wxSetWorkingDirectory(workDir);
-	//hope
-	wxMkdir(_(CEPDIR));
 
 	config = cmd_ln_parse_file_r(NULL, arg, argv[1], FALSE);
 
@@ -511,6 +503,15 @@ doDecode(char** argv)
 	}
 	port = cmd_ln_int_r(config, "-port");
 	timeout = cmd_ln_int_r(config, "-timeout");
+
+	wxGetEnv(_("PROGRAMDATA"), &workDir);
+	workDir.Append(_("\\")).Append(_(APPNAME));
+	if (!wxDir::Exists(workDir)) {
+		wxMkdir(workDir);
+	}
+	wxSetWorkingDirectory(workDir);
+	//hope
+	wxMkdir(_(CEPDIR));
 
 	kb_init(&kb, config);
 	/* When -utt is specified, corpus.c will wait for the utterance to change */
